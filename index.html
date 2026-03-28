@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotional Processing Experiment</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- jsPsych v7 Core -->
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
+    
+    <!-- jsPsych Plugins -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.2.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.2.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.3"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <!-- Startup Phase (Language Selection & Demographics) -->
+    <div id="startup-container" style="display: flex; height: 100vh; width: 100vw; align-items: center; justify-content: center;">
+      <div class="experiment-form-container">
+        <h2 class="mb-4">Emotional Processing Experiment</h2>
+        <p class="mb-6">Please provide your background information before starting the study.</p>
+        
+        <form id="demographics-form">
+          <label>Participant Number:</label>
+          <input type="text" id="participant_id" name="participant_id" required>
+
+          <label>First Language (L1):</label>
+          <select id="l1" name="l1" required>
+            <option value="">Select...</option>
+            <option value="it">Italian</option>
+            <option value="tr">Turkish</option>
+            <option value="ru">Russian</option>
+            <option value="nl">Dutch</option>
+          </select>
+
+          <label>Second Language (L2):</label>
+          <input type="text" value="English" disabled style="background-color: #f1f5f9; color: #64748b; font-weight: 500; cursor: not-allowed; margin-bottom: 24px; padding: 10px 14px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 15px; box-sizing: border-box;">
+
+          <label>L2 Proficiency (CEFR Level):</label>
+          <select id="l2_proficiency" name="l2_proficiency" required>
+            <option value="">Select...</option>
+            <option value="A1">A1 (Beginner)</option>
+            <option value="A2">A2 (Elementary)</option>
+            <option value="B1">B1 (Intermediate)</option>
+            <option value="B2">B2 (Upper Intermediate)</option>
+            <option value="C1">C1 (Advanced)</option>
+            <option value="C2">C2 (Mastery / Native-like)</option>
+          </select>
+
+          <label>Age of Acquisition of L2 (in years):</label>
+          <input type="number" id="age_of_acquisition" name="age_of_acquisition" min="0" max="100" required>
+
+          <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+              <label>Age:</label>
+              <input type="number" id="age" name="age" min="18" max="100" required>
+            </div>
+            <div style="flex: 1;">
+              <label>Gender:</label>
+              <select id="gender" name="gender" required>
+                <option value="">Select...</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="nonbinary">Non-binary</option>
+                <option value="other">Other/Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="submit-container mt-4">
+            <button type="submit" class="jspsych-btn">Start Experiment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- jsPsych container -->
+    <div id="jspsych-target" style="display:none;"></div>
+    
+    <!-- Experiment Logic -->
+    <script src="experiment.js"></script>
+  </body>
+</html>
