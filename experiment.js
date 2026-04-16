@@ -57,10 +57,24 @@ const i18n = {
   }
 };
 
-// OASIS Images
-const posImages = Array.from({ length: 25 }, (_, i) => `stimuli/positive/pos${i+1}.jpg`);
-const negImages = Array.from({ length: 28 }, (_, i) => `stimuli/negative/neg${i+1}.jpg`);
-const stimuliImages = [...posImages, ...negImages];
+// Picturesets
+const pictureset1 = [
+  "pictureset1/Alcohol 4.jpg",
+  "pictureset1/Animal carcass 1.jpg",
+  "pictureset1/Baby 5.jpg",
+  "pictureset1/Dog 6.jpg",
+  "pictureset1/Police 2.jpg",
+  "pictureset1/Snake 1.jpg"
+];
+const pictureset2 = [
+  "pictureset2/Animal carcass 3.jpg",
+  "pictureset2/Baby 6.jpg",
+  "pictureset2/Dog 4.jpg",
+  "pictureset2/Police 5.jpg",
+  "pictureset2/Snake 4.jpg",
+  "pictureset2/Toast 1.jpg"
+];
+const stimuliImages = [...pictureset1, ...pictureset2];
 
 // Utility to shuffle arrays (Fisher-Yates)
 function shuffle(array) {
@@ -139,25 +153,27 @@ function runExperiment(data) {
   // Even IDs = L1 first, Odd IDs = L2 first
   const participantNumber = parseInt(data.participant_id, 10);
   const l1_first = !isNaN(participantNumber) ? (participantNumber % 2 === 0) : (Math.random() < 0.5);
-  jsPsych.data.addProperties({ l1_first: l1_first });
-
-  // Shuffle positive and negative images separately to pick random subsets for this participant
-  const shuffledPos = shuffle([...posImages]);
-  const shuffledNeg = shuffle([...negImages]);
   
-  // Pick exactly 6 positive and 6 negative for block 1 (12 total)
-  // Pick the next 6 positive and 6 negative for block 2 (12 total)
-  const block1Pos = shuffledPos.slice(0, 6);
-  const block1Neg = shuffledNeg.slice(0, 6);
-  const block2Pos = shuffledPos.slice(6, 12);
-  const block2Neg = shuffledNeg.slice(6, 12);
+  // Counterbalancing: Decide which pictureset goes to L1 and L2
+  // Participants 1, 2 get set1 for L1; Participants 3, 4 get set2 for L1, etc.
+  const set1_for_l1 = !isNaN(participantNumber) ? (Math.floor((participantNumber - 1) / 2) % 2 === 0) : (Math.random() < 0.5);
   
-  // Create balanced blocks of 12 images each (24 total limit)
-  const block1Images = shuffle([...block1Pos, ...block1Neg]);
-  const block2Images = shuffle([...block2Pos, ...block2Neg]);
+  jsPsych.data.addProperties({ 
+    l1_first: l1_first,
+    set1_for_l1: set1_for_l1
+  });
 
+  // Randomize the order of pictures within each pictureset
+  const shuffledSet1 = shuffle([...pictureset1]);
+  const shuffledSet2 = shuffle([...pictureset2]);
+  
+  // Assign picturesets to L1 and L2 based on the counterbalance condition
+  const l1_images = set1_for_l1 ? shuffledSet1 : shuffledSet2;
+  const l2_images = set1_for_l1 ? shuffledSet2 : shuffledSet1;
+
+  // Determine the order in which blocks (L1/L2) are presented
   const blockOrder = l1_first ? [data.l1, data.l2] : [data.l2, data.l1];
-  const imageBlocks = [block1Images, block2Images];
+  const imageBlocks = l1_first ? [l1_images, l2_images] : [l2_images, l1_images];
   const typeBlocks = l1_first ? ['L1', 'L2'] : ['L2', 'L1'];
 
   blockOrder.forEach((langKey, blockIndex) => {
@@ -200,7 +216,7 @@ function runExperiment(data) {
         </div>
         <div class="mb-6">
           <label style="font-weight: 600; display: block; margin-bottom: 8px;">${t.text_prompt}</label>
-          <textarea name="description" required placeholder="..."></textarea>
+          <textarea name="description" required placeholder="..." style="width: 100%; min-height: 150px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; font-size: 16px; box-sizing: border-box; resize: vertical;"></textarea>
         </div>
       `;
 
